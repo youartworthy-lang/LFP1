@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Legacy Front Page Tracker</title>
+  <style>
+    /* Basic reset and typography */
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+      color: #333;
+    }
+
+    h1, h2 {
+      margin-top: 0;
+    }
+
+    /* Navigation styles */
+    nav {
+      background-color: #333;
+      color: #fff;
+      padding: 10px 0;
+    }
+    nav ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+    }
+    nav li {
+      margin: 0 15px;
+    }
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 6px 12px;
+    }
+    nav a.active, nav a:hover {
+      background-color: #555;
+      border-radius: 4px;
+    }
+
+    /* Content container */
+    #content {
+      padding: 20px;
+    }
+
+    /* Section styling */
+    section {
+      display: none;
+      background-color: #fff;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    section.active {
+      display: block;
+    }
+
+    /* Forms and tables */
+    form {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: inline-block;
+      margin: 5px 0;
+    }
+
+    input[type="text"], input[type="number"], select {
+      padding: 5px;
+      margin-right: 10px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+    }
+
+    button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 3px;
+      background-color: #007bff;
+      color: #fff;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    th, td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    .priority {
+      background-color: #fff3cd;
+    }
+
+    .completed {
+      text-decoration: line-through;
+      color: #888;
+    }
+
+    .status-bar {
+      height: 20px;
+      background-color: #e0e0e0;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 5px;
+    }
+    .status-fill {
+      height: 100%;
+      background-color: #28a745;
+      width: 0;
+    }
+    .profit-result {
+      font-size: 1.2em;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <ul>
+      <li><a href="#tasks" id="nav-tasks" class="active">Priority Tasks</a></li>
+      <li><a href="#pipeline" id="nav-pipeline">Pipeline</a></li>
+      <li><a href="#profit" id="nav-profit">Profit Projection</a></li>
+    </ul>
+  </nav>
+
+  <div id="content">
+    <!-- Priority Tasks Section -->
+    <section id="tasks-section" class="active">
+      <h2>Priority Tasks</h2>
+      <p>Use this page to add new listings and track their progress across all preparation steps. Listings with priority milestone ages are highlighted.</p>
+      <form id="add-listing-form">
+        <label>Birth Year (Age):
+          <input type="number" id="listing-age" min="1" max="2026" required>
+        </label>
+        <label>Edition:
+          <select id="listing-edition">
+            <option value="generic">Generic</option>
+            <option value="black">Black Edition</option>
+          </select>
+        </label>
+        <label>Country:
+          <select id="listing-country">
+            <option value="USA">USA</option>
+            <option value="UK">UK</option>
+            <option value="Canada">Canada</option>
+            <option value="Australia">Australia</option>
+          </select>
+        </label>
+        <button type="submit">Add Listing</button>
+      </form>
+      <table id="tasks-table">
+        <thead>
+          <tr>
+            <th>Listing ID</th>
+            <th>Birth Year</th>
+            <th>Edition</th>
+            <th>Country</th>
+            <th>Facts Ready</th>
+            <th>Bulk Create in Canva</th>
+            <th>Edit in Canva</th>
+            <th>Create Mockups</th>
+            <th>Create Description</th>
+            <th>Publish</th>
+            <th>Post Reels</th>
+          </tr>
+        </thead>
+        <tbody id="tasks-body">
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Pipeline Section -->
+    <section id="pipeline-section">
+      <h2>Pipeline &amp; Variations</h2>
+      <p>Track your progress as you create additional variations of each listing. Variation 1 represents your initial design; Variations 2–4 allow for alternative styles to broaden exposure.</p>
+      <table id="pipeline-table">
+        <thead>
+          <tr>
+            <th>Listing ID</th>
+            <th>Birth Year</th>
+            <th>Edition</th>
+            <th>Country</th>
+            <th>Variation 1</th>
+            <th>Variation 2</th>
+            <th>Variation 3</th>
+            <th>Variation 4</th>
+            <th>Progress</th>
+          </tr>
+        </thead>
+        <tbody id="pipeline-body">
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Profit Projection Section -->
+    <section id="profit-section">
+      <h2>Profit Projection</h2>
+      <p>Estimate monthly profits based on your active listings and expected order volume. Adjust the assumptions to see how it impacts your earnings and progress toward the $10k/month goal.</p>
+      <form id="profit-form">
+        <label>Monthly Instant Orders:
+          <input type="number" id="instant-orders" min="0" value="0">
+        </label>
+        <label>Price per Instant Download ($):
+          <input type="number" id="instant-price" step="0.01" value="9.99">
+        </label>
+        <br>
+        <label>Monthly Custom Orders:
+          <input type="number" id="custom-orders" min="0" value="0">
+        </label>
+        <label>Average Price per Custom Digital ($):
+          <input type="number" id="custom-price" step="0.01" value="17.99">
+        </label>
+        <br>
+        <label>Listing Fee ($):
+          <input type="number" id="listing-fee" step="0.01" value="0.20">
+        </label>
+        <label>Transaction Fee (%):
+          <input type="number" id="transaction-fee" step="0.1" value="6.5">
+        </label>
+        <br>
+        <label>Payment Processing Fee (%):
+          <input type="number" id="payment-percent" step="0.1" value="3">
+        </label>
+        <label>Payment Fixed Fee ($):
+          <input type="number" id="payment-fixed" step="0.01" value="0.25">
+        </label>
+        <br>
+        <label>Offsite Ads Share of Orders (%):
+          <input type="number" id="ads-share" step="1" value="10">
+        </label>
+        <label>Offsite Ads Fee (%):
+          <input type="number" id="ads-fee" step="0.1" value="15">
+        </label>
+        <br>
+        <button type="button" id="calculate-profit">Calculate</button>
+      </form>
+      <div id="profit-results">
+        <!-- Results will appear here -->
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // Data structures
+    let listings = [];
+
+    const priorityAges = [18, 21, 30, 40, 50, 60, 70, 80];
+
+    // Load listings from localStorage
+    function loadListings() {
+      const data = localStorage.getItem('lfp_listings');
+      if (data) {
+        try {
+          listings = JSON.parse(data);
+        } catch (e) {
+          console.error('Error parsing listings from localStorage', e);
+          listings = [];
+        }
+      }
+    }
+
+    // Save listings to localStorage
+    function saveListings() {
+      localStorage.setItem('lfp_listings', JSON.stringify(listings));
+    }
+
+    // Generate a unique ID for each listing
+    function generateId() {
+      return 'L' + Date.now() + '-' + Math.floor(Math.random() * 1000);
+    }
+
+    // Add a listing from the form
+    function addListing(event) {
+      event.preventDefault();
+      const age = parseInt(document.getElementById('listing-age').value);
+      const edition = document.getElementById('listing-edition').value;
+      const country = document.getElementById('listing-country').value;
+      if (!age) return;
+      const listing = {
+        id: generateId(),
+        age: age,
+        edition: edition,
+        country: country,
+        tasks: {
+          factsReady: false,
+          bulkCreate: false,
+          editCanva: false,
+          createMockups: false,
+          description: false,
+          publish: false,
+          postReels: false
+        },
+        variations: {
+          v1: false,
+          v2: false,
+          v3: false,
+          v4: false
+        }
+      };
+      listings.push(listing);
+      saveListings();
+      renderTasks();
+      renderPipeline();
+      document.getElementById('add-listing-form').reset();
+    }
+
+    // Render the tasks table
+    function renderTasks() {
+      const tbody = document.getElementById('tasks-body');
+      tbody.innerHTML = '';
+      listings.forEach(listing => {
+        const tr = document.createElement('tr');
+        if (priorityAges.includes(listing.age)) {
+          tr.classList.add('priority');
+        }
+        // Listing details
+        tr.innerHTML = `
+          <td>${listing.id}</td>
+          <td>${listing.age}</td>
+          <td>${listing.edition}</td>
+          <td>${listing.country}</td>
+        `;
+        // Tasks
+        const tasks = ['factsReady','bulkCreate','editCanva','createMockups','description','publish','postReels'];
+        tasks.forEach(taskKey => {
+          const td = document.createElement('td');
+          const input = document.createElement('input');
+          input.type = 'checkbox';
+          input.checked = listing.tasks[taskKey];
+          input.addEventListener('change', (event) => {
+            listing.tasks[taskKey] = event.target.checked;
+            saveListings();
+            renderPipeline();
+          });
+          td.appendChild(input);
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Render the pipeline table
+    function renderPipeline() {
+      const tbody = document.getElementById('pipeline-body');
+      tbody.innerHTML = '';
+      listings.forEach(listing => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${listing.id}</td>
+          <td>${listing.age}</td>
+          <td>${listing.edition}</td>
+          <td>${listing.country}</td>
+        `;
+        // Variation checkboxes
+        ['v1','v2','v3','v4'].forEach(varKey => {
+          const td = document.createElement('td');
+          const input = document.createElement('input');
+          input.type = 'checkbox';
+          input.checked = listing.variations[varKey];
+          input.addEventListener('change', (event) => {
+            listing.variations[varKey] = event.target.checked;
+            saveListings();
+            renderPipeline();
+          });
+          td.appendChild(input);
+          tr.appendChild(td);
+        });
+        // Progress bar cell
+        const progressCell = document.createElement('td');
+        const progressContainer = document.createElement('div');
+        progressContainer.className = 'status-bar';
+        const progressFill = document.createElement('div');
+        progressFill.className = 'status-fill';
+        const completedCount = Object.values(listing.variations).filter(v => v).length;
+        const percent = (completedCount / 4) * 100;
+        progressFill.style.width = percent + '%';
+        progressContainer.appendChild(progressFill);
+        progressCell.appendChild(progressContainer);
+        tr.appendChild(progressCell);
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Switch between sections
+    function switchSection(event) {
+      const target = event.target;
+      if (!target || !target.hash) return;
+      event.preventDefault();
+      const sections = document.querySelectorAll('section');
+      sections.forEach(sec => sec.classList.remove('active'));
+      const navLinks = document.querySelectorAll('nav a');
+      navLinks.forEach(link => link.classList.remove('active'));
+      const sectionId = target.hash.substring(1) + '-section';
+      document.getElementById(sectionId).classList.add('active');
+      target.classList.add('active');
+    }
+
+    // Profit calculation helper
+    function calculateProfit() {
+      const instantOrders = parseInt(document.getElementById('instant-orders').value) || 0;
+      const instantPrice = parseFloat(document.getElementById('instant-price').value) || 0;
+      const customOrders = parseInt(document.getElementById('custom-orders').value) || 0;
+      const customPrice = parseFloat(document.getElementById('custom-price').value) || 0;
+      const listingFee = parseFloat(document.getElementById('listing-fee').value) || 0;
+      const transactionFee = parseFloat(document.getElementById('transaction-fee').value) / 100 || 0;
+      const paymentPercent = parseFloat(document.getElementById('payment-percent').value) / 100 || 0;
+      const paymentFixed = parseFloat(document.getElementById('payment-fixed').value) || 0;
+      const adsShare = parseFloat(document.getElementById('ads-share').value) / 100 || 0;
+      const adsFee = parseFloat(document.getElementById('ads-fee').value) / 100 || 0;
+
+      // Net per order calculations
+      function netPerOrder(price) {
+        // base net: price minus transaction fee and payment processing
+        let net = price * (1 - transactionFee - paymentPercent);
+        // subtract payment fixed fee
+        net -= paymentFixed;
+        // subtract listing fee (for digital products this is usually per order; assume listing fee for each sale)
+        net -= listingFee;
+        // subtract offsite ads cost for a percentage of orders
+        const adsCost = price * adsFee * adsShare;
+        net -= adsCost;
+        return net;
+      }
+      const netInstant = netPerOrder(instantPrice);
+      const netCustom = netPerOrder(customPrice);
+      const totalOrders = instantOrders + customOrders;
+      const totalGross = (instantOrders * instantPrice) + (customOrders * customPrice);
+      const totalNet = (instantOrders * netInstant) + (customOrders * netCustom);
+      // required orders to hit 10k net
+      const averageNet = totalOrders > 0 ? totalNet / totalOrders : 0;
+      const requiredOrders = averageNet > 0 ? Math.ceil(10000 / averageNet) : 0;
+
+      const resultsDiv = document.getElementById('profit-results');
+      resultsDiv.innerHTML = '';
+      const grossEl = document.createElement('p');
+      grossEl.textContent = `Total Monthly Gross Revenue: $${totalGross.toFixed(2)}`;
+      const netEl = document.createElement('p');
+      netEl.textContent = `Total Monthly Net Profit (after fees): $${totalNet.toFixed(2)}`;
+      const progressEl = document.createElement('p');
+      const progressPct = totalNet / 10000;
+      const pctStr = (progressPct * 100).toFixed(1);
+      progressEl.textContent = `Progress toward $10k goal: ${pctStr}%`;
+      const requiredEl = document.createElement('p');
+      if (averageNet > 0) {
+        requiredEl.textContent = `You need approximately ${requiredOrders} total orders per month at this pricing mix to reach $10k net profit.`;
+      } else {
+        requiredEl.textContent = 'Please enter some orders to compute required orders.';
+      }
+      resultsDiv.appendChild(grossEl);
+      resultsDiv.appendChild(netEl);
+      resultsDiv.appendChild(progressEl);
+      resultsDiv.appendChild(requiredEl);
+    }
+
+    // Event listeners
+    document.getElementById('add-listing-form').addEventListener('submit', addListing);
+    document.getElementById('calculate-profit').addEventListener('click', calculateProfit);
+    document.querySelectorAll('nav a').forEach(link => {
+      link.addEventListener('click', switchSection);
+    });
+
+    // Initialize
+    loadListings();
+    renderTasks();
+    renderPipeline();
+  </script>
+</body>
+</html>
