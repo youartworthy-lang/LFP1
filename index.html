@@ -1,489 +1,1781 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Legacy Front Page Tracker</title>
-  <style>
-    /* Basic reset and typography */
-    body {
-      font-family: Arial, Helvetica, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f5f5f5;
-      color: #333;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Legacy Front Page — Production Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════
+   LEGACY FRONT PAGE — PRODUCTION TRACKER
+   Aesthetic: Vintage Newspaper + Digital Dark
+   Feels like a broadsheet meets a trading desk
+══════════════════════════════════════════ */
+:root {
+  --ink:     #0c0b09;
+  --ink2:    #141210;
+  --ink3:    #1c1915;
+  --ink4:    #252118;
+  --paper:   #f0e8d0;
+  --paper2:  #d4c8a8;
+  --paper3:  #b8aa88;
+  --gold:    #c9973a;
+  --gold2:   #e8c575;
+  --gold3:   #f5dfa0;
+  --green:   #2d7a50;
+  --green2:  #3da066;
+  --teal:    #4ecdc4;
+  --rust:    #a84820;
+  --rust2:   #c95e30;
+  --mid:     #6b5f4a;
+  --border:  rgba(201,151,58,0.18);
+  --border2: rgba(201,151,58,0.35);
+  --shadow:  0 4px 24px rgba(0,0,0,0.6);
+}
 
-    h1, h2 {
-      margin-top: 0;
-    }
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
 
-    /* Navigation styles */
-    nav {
-      background-color: #333;
-      color: #fff;
-      padding: 10px 0;
-    }
-    nav ul {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-    }
-    nav li {
-      margin: 0 15px;
-    }
-    nav a {
-      color: #fff;
-      text-decoration: none;
-      font-weight: bold;
-      padding: 6px 12px;
-    }
-    nav a.active, nav a:hover {
-      background-color: #555;
-      border-radius: 4px;
-    }
+body {
+  background: var(--ink);
+  color: var(--paper);
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  min-height: 100vh;
+  overflow-x: hidden;
+  /* Subtle halftone background texture */
+  background-image: radial-gradient(circle, rgba(201,151,58,0.025) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
 
-    /* Content container */
-    #content {
-      padding: 20px;
-    }
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width:5px; height:5px; }
+::-webkit-scrollbar-track { background: var(--ink2); }
+::-webkit-scrollbar-thumb { background: var(--gold); border-radius:2px; }
 
-    /* Section styling */
-    section {
-      display: none;
-      background-color: #fff;
-      padding: 20px;
-      margin-bottom: 20px;
-      border-radius: 5px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
+/* ══════════════════════════
+   MASTHEAD
+══════════════════════════ */
+.masthead {
+  background: linear-gradient(180deg, #0a0907 0%, var(--ink2) 100%);
+  border-bottom: 3px double var(--gold);
+  padding: 0;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.8);
+}
+.masthead-inner {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 8px 18px 0;
+}
+.masthead-top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 0;
+}
+.masthead-title {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 200px;
+}
+.paper-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--paper);
+  letter-spacing: 2px;
+  line-height: 1;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+.paper-name .the {
+  font-size: 14px;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--gold2);
+  letter-spacing: 1px;
+  margin-right: 3px;
+}
+.paper-tagline {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: var(--mid);
+  text-transform: uppercase;
+  margin-top: 2px;
+  border-top: 1px solid var(--border);
+  padding-top: 3px;
+}
 
-    section.active {
-      display: block;
-    }
+/* STAT PILLS in header */
+.header-stats {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.hstat {
+  background: var(--ink3);
+  border: 1px solid var(--border);
+  padding: 5px 10px;
+  text-align: center;
+  min-width: 64px;
+  position: relative;
+  overflow: hidden;
+}
+.hstat::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--gold);
+}
+.hstat.green::before { background: var(--green2); }
+.hstat.rust::before  { background: var(--rust2); }
+.hstat.teal::before  { background: var(--teal); }
+.hstat-val {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1;
+  display: block;
+}
+.hstat.green .hstat-val { color: var(--green2); }
+.hstat.rust  .hstat-val { color: var(--rust2); }
+.hstat.teal  .hstat-val { color: var(--teal); }
+.hstat-lbl {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--mid);
+  display: block;
+  margin-top: 1px;
+}
 
-    /* Forms and tables */
-    form {
-      margin-bottom: 20px;
-    }
+/* PROGRESS BAR */
+.masthead-progress {
+  margin-top: 6px;
+  padding-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.prog-bar-bg {
+  flex: 1;
+  height: 4px;
+  background: var(--ink3);
+  border-radius: 2px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.prog-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--green), var(--green2));
+  border-radius: 2px;
+  transition: width .6s ease;
+}
+.prog-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  color: var(--mid);
+  white-space: nowrap;
+}
 
-    label {
-      display: inline-block;
-      margin: 5px 0;
-    }
+/* TABS NAV */
+.tabs-bar {
+  display: flex;
+  gap: 0;
+  border-top: 1px solid var(--border);
+  margin-top: 4px;
+}
+.tab-btn {
+  font-family: 'Outfit', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 8px 18px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: var(--mid);
+  cursor: pointer;
+  transition: all .15s;
+  white-space: nowrap;
+}
+.tab-btn:hover { color: var(--paper2); border-bottom-color: rgba(201,151,58,0.3); }
+.tab-btn.on    { color: var(--gold); border-bottom-color: var(--gold); background: rgba(201,151,58,0.05); }
 
-    input[type="text"], input[type="number"], select {
-      padding: 5px;
-      margin-right: 10px;
-      border: 1px solid #ccc;
-      border-radius: 3px;
-    }
+/* ══════════════════════════
+   PAGE CONTENT
+══════════════════════════ */
+.page {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 18px 18px 80px;
+}
 
-    button {
-      padding: 6px 12px;
-      border: none;
-      border-radius: 3px;
-      background-color: #007bff;
-      color: #fff;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
+/* ══════════════════════════
+   SECTION HEADERS
+══════════════════════════ */
+.section-head {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 20px;
-    }
-    th, td {
-      padding: 8px;
-      text-align: left;
-      border-bottom: 1px solid #ddd;
-    }
-    tr:nth-child(even) {
-      background-color: #f9f9f9;
-    }
+/* CARDS */
+.card {
+  background: var(--ink2);
+  border: 1px solid var(--border);
+  border-top: 2px solid var(--gold);
+  padding: 14px 16px;
+  margin-bottom: 12px;
+}
+.card.teal-top  { border-top-color: var(--teal); }
+.card.green-top { border-top-color: var(--green2); }
+.card.rust-top  { border-top-color: var(--rust2); }
 
-    .priority {
-      background-color: #fff3cd;
-    }
+/* ══════════════════════════
+   TODAY VIEW — MISSION DASHBOARD
+══════════════════════════ */
+.mission-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.mc {
+  background: var(--ink3);
+  border: 1px solid var(--border);
+  padding: 12px 10px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.mc::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+}
+.mc-gold::after  { background: var(--gold); }
+.mc-teal::after  { background: var(--teal); }
+.mc-green::after { background: var(--green2); }
+.mc-rust::after  { background: var(--rust2); }
+.mc-val {
+  font-family: 'Playfair Display', serif;
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--gold);
+  display: block;
+}
+.mc-teal  .mc-val  { color: var(--teal); }
+.mc-green .mc-val  { color: var(--green2); }
+.mc-rust  .mc-val  { color: var(--rust2); }
+.mc-lbl {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--mid);
+  margin-top: 3px;
+  display: block;
+  line-height: 1.4;
+}
+.mission-msg {
+  font-size: 12px;
+  line-height: 1.7;
+  padding: 10px 12px;
+  background: var(--ink3);
+  border-left: 3px solid var(--gold);
+  color: var(--paper2);
+}
 
-    .completed {
-      text-decoration: line-through;
-      color: #888;
-    }
+/* REAL DATA INPUTS */
+.real-data-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.rd-field label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--mid);
+  display: block;
+  margin-bottom: 4px;
+}
+.rd-inp {
+  width: 100%;
+  background: var(--ink3);
+  border: 1px solid var(--border);
+  color: var(--paper);
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  padding: 7px 10px;
+  outline: none;
+  transition: border-color .15s;
+  border-radius: 2px;
+}
+.rd-inp:focus { border-color: var(--gold); }
 
-    .status-bar {
-      height: 20px;
-      background-color: #e0e0e0;
-      border-radius: 3px;
-      overflow: hidden;
-      margin-top: 5px;
-    }
-    .status-fill {
-      height: 100%;
-      background-color: #28a745;
-      width: 0;
-    }
-    .profit-result {
-      font-size: 1.2em;
-      font-weight: bold;
-      margin-top: 10px;
-    }
-  </style>
+/* ══════════════════════════
+   PARTNER SPLIT WIDGET
+══════════════════════════ */
+.split-card {
+  background: linear-gradient(135deg, rgba(201,151,58,0.08), rgba(45,122,80,0.06));
+  border: 1px solid var(--border2);
+  border-left: 4px solid var(--gold);
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.split-person {
+  flex: 1;
+  min-width: 120px;
+  text-align: center;
+}
+.split-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--paper);
+  margin-bottom: 3px;
+}
+.split-amount {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--gold);
+  line-height: 1;
+}
+.split-divider {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--mid);
+  text-align: center;
+}
+.split-total {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--green2);
+}
+
+/* ══════════════════════════
+   TASK LIST
+══════════════════════════ */
+.task-item {
+  background: var(--ink2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 9px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 5px;
+  transition: border-color .12s;
+  flex-wrap: wrap;
+}
+.task-item:hover { border-color: var(--gold); }
+.task-item.done  { background: rgba(45,122,80,.06); border-color: #1a5c35; }
+.task-item.inprog { background: rgba(201,151,58,.05); border-color: #5a4010; }
+
+.task-age {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--paper);
+  min-width: 38px;
+}
+.task-item.done .task-age { color: var(--green2); }
+
+.task-info { flex: 1; min-width: 120px; }
+.task-name {
+  font-size: 12px;
+  color: var(--paper2);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+.badge-cat {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px;
+  padding: 1px 5px;
+  border-radius: 2px;
+  letter-spacing: 1px;
+}
+.badge-gen  { background: rgba(232,197,117,.15); color: var(--gold2); }
+.badge-blk  { background: rgba(78,205,196,.15);  color: var(--teal); }
+.badge-cust { color: var(--rust2); font-size: 10px; }
+.badge-dl   { color: var(--green2); font-size: 10px; }
+
+.stage-dots { display: flex; gap: 4px; align-items: center; }
+.sdot {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: var(--border);
+  cursor: pointer;
+  transition: transform .1s, background .1s;
+  border: none;
+  outline: none;
+  flex-shrink: 0;
+}
+.sdot:hover    { transform: scale(1.3); }
+.sdot.done     { background: var(--green2); }
+.sdot.next     { background: var(--gold); box-shadow: 0 0 4px var(--gold); }
+.stage-status {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  color: var(--mid);
+  margin-left: 4px;
+}
+
+.mark-live-btn {
+  font-family: 'Outfit', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  padding: 5px 12px;
+  background: var(--teal);
+  color: var(--ink);
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .12s;
+  flex-shrink: 0;
+}
+.mark-live-btn:hover { background: #3ab8b0; }
+
+/* ══════════════════════════
+   FILTERS
+══════════════════════════ */
+.filters-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.fsel {
+  background: var(--ink3);
+  border: 1px solid var(--border);
+  color: var(--paper2);
+  font-family: 'Outfit', sans-serif;
+  font-size: 11px;
+  padding: 5px 8px;
+  outline: none;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: border-color .12s;
+}
+.fsel:focus { border-color: var(--gold); }
+
+/* ══════════════════════════
+   PIPELINE TABLE
+══════════════════════════ */
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+}
+table.ptbl {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.ptbl thead th {
+  background: var(--ink3);
+  padding: 7px 10px;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  text-align: left;
+  white-space: nowrap;
+  border-bottom: 2px solid var(--border2);
+  position: sticky;
+  top: 0;
+}
+.ptbl tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background .1s;
+}
+.ptbl tbody tr:hover { background: rgba(201,151,58,0.04); }
+.ptbl td { padding: 6px 10px; vertical-align: middle; }
+.ptbl .stage-sq {
+  display: inline-block;
+  width: 14px; height: 14px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: transform .1s;
+}
+.ptbl .stage-sq:hover { transform: scale(1.15); }
+
+/* ══════════════════════════
+   PROJECTIONS VIEW
+══════════════════════════ */
+.proj-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.proj-stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.pstat {
+  background: var(--ink3);
+  border: 1px solid var(--border);
+  padding: 14px 12px;
+  text-align: center;
+}
+.pstat-val {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1;
+  display: block;
+}
+.pstat-lbl {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--mid);
+  display: block;
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+.milestone-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+}
+.ms-bar-bg {
+  flex: 1;
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+.ms-bar-fill { height: 100%; border-radius: 2px; }
+
+.ed-breakdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 0;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+}
+.ed-bar-bg {
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 3px;
+}
+.ed-bar-fill { height: 100%; border-radius: 2px; }
+
+/* ══════════════════════════
+   BATCH OPERATIONS
+══════════════════════════ */
+.batch-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  background: var(--ink3);
+  border: 1px solid var(--border);
+  padding: 10px 12px;
+  margin-bottom: 10px;
+}
+.batch-btn {
+  font-family: 'Outfit', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 6px 16px;
+  background: none;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  cursor: pointer;
+  transition: all .15s;
+  border-radius: 2px;
+}
+.batch-btn:hover { background: var(--gold); color: var(--ink); }
+
+/* ══════════════════════════
+   TOAST
+══════════════════════════ */
+#toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(12px);
+  background: var(--ink3);
+  border: 1px solid var(--gold);
+  color: var(--paper);
+  font-family: 'Outfit', sans-serif;
+  font-size: 12px;
+  letter-spacing: 1px;
+  padding: 9px 20px;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: all .25s;
+  white-space: nowrap;
+  border-radius: 2px;
+}
+#toast.on { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ══════════════════════════
+   VIEWS
+══════════════════════════ */
+.view { display: none; }
+.view.on { display: block; }
+
+/* ══════════════════════════
+   UTILITIES
+══════════════════════════ */
+.flex-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.spacer { flex: 1; }
+.count-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  color: var(--mid);
+  letter-spacing: 1px;
+}
+.divider-ornament {
+  text-align: center;
+  color: var(--mid);
+  font-size: 10px;
+  letter-spacing: 4px;
+  margin: 12px 0;
+  position: relative;
+}
+.divider-ornament::before,
+.divider-ornament::after {
+  content: '';
+  position: absolute;
+  top: 50%; width: calc(50% - 40px);
+  height: 1px;
+  background: var(--border);
+}
+.divider-ornament::before { left: 0; }
+.divider-ornament::after  { right: 0; }
+
+/* ══════════════════════════
+   MOBILE
+══════════════════════════ */
+@media (max-width: 680px) {
+  .paper-name { font-size: 20px; }
+  .mission-grid { grid-template-columns: repeat(2, 1fr); }
+  .proj-stats-row { grid-template-columns: repeat(2, 1fr); }
+  .masthead-top { gap: 8px; }
+  .header-stats { gap: 5px; }
+  .hstat { min-width: 50px; padding: 4px 7px; }
+  .hstat-val { font-size: 18px; }
+  .tabs-bar { overflow-x: auto; }
+  .tab-btn { padding: 8px 12px; font-size: 10px; }
+  .page { padding: 12px 10px 80px; }
+}
+</style>
 </head>
 <body>
-  <nav>
-    <ul>
-      <li><a href="#tasks" id="nav-tasks" class="active">Priority Tasks</a></li>
-      <li><a href="#pipeline" id="nav-pipeline">Pipeline</a></li>
-      <li><a href="#profit" id="nav-profit">Profit Projection</a></li>
-    </ul>
-  </nav>
 
-  <div id="content">
-    <!-- Priority Tasks Section -->
-    <section id="tasks-section" class="active">
-      <h2>Priority Tasks</h2>
-      <p>Use this page to add new listings and track their progress across all preparation steps. Listings with priority milestone ages are highlighted.</p>
-      <form id="add-listing-form">
-        <label>Birth Year (Age):
-          <input type="number" id="listing-age" min="1" max="2026" required>
-        </label>
-        <label>Edition:
-          <select id="listing-edition">
-            <option value="generic">Generic</option>
-            <option value="black">Black Edition</option>
-          </select>
-        </label>
-        <label>Country:
-          <select id="listing-country">
-            <option value="USA">USA</option>
-            <option value="UK">UK</option>
-            <option value="Canada">Canada</option>
-            <option value="Australia">Australia</option>
-          </select>
-        </label>
-        <button type="submit">Add Listing</button>
-      </form>
-      <table id="tasks-table">
-        <thead>
-          <tr>
-            <th>Listing ID</th>
-            <th>Birth Year</th>
-            <th>Edition</th>
-            <th>Country</th>
-            <th>Facts Ready</th>
-            <th>Bulk Create in Canva</th>
-            <th>Edit in Canva</th>
-            <th>Create Mockups</th>
-            <th>Create Description</th>
-            <th>Publish</th>
-            <th>Post Reels</th>
-          </tr>
-        </thead>
-        <tbody id="tasks-body">
-        </tbody>
-      </table>
-    </section>
+<div id="toast"></div>
 
-    <!-- Pipeline Section -->
-    <section id="pipeline-section">
-      <h2>Pipeline &amp; Variations</h2>
-      <p>Track your progress as you create additional variations of each listing. Variation 1 represents your initial design; Variations 2–4 allow for alternative styles to broaden exposure.</p>
-      <table id="pipeline-table">
-        <thead>
-          <tr>
-            <th>Listing ID</th>
-            <th>Birth Year</th>
-            <th>Edition</th>
-            <th>Country</th>
-            <th>Variation 1</th>
-            <th>Variation 2</th>
-            <th>Variation 3</th>
-            <th>Variation 4</th>
-            <th>Progress</th>
-          </tr>
-        </thead>
-        <tbody id="pipeline-body">
-        </tbody>
-      </table>
-    </section>
-
-    <!-- Profit Projection Section -->
-    <section id="profit-section">
-      <h2>Profit Projection</h2>
-      <p>Estimate monthly profits based on your active listings and expected order volume. Adjust the assumptions to see how it impacts your earnings and progress toward the $10k/month goal.</p>
-      <form id="profit-form">
-        <label>Monthly Instant Orders:
-          <input type="number" id="instant-orders" min="0" value="0">
-        </label>
-        <label>Price per Instant Download ($):
-          <input type="number" id="instant-price" step="0.01" value="9.99">
-        </label>
-        <br>
-        <label>Monthly Custom Orders:
-          <input type="number" id="custom-orders" min="0" value="0">
-        </label>
-        <label>Average Price per Custom Digital ($):
-          <input type="number" id="custom-price" step="0.01" value="17.99">
-        </label>
-        <br>
-        <label>Listing Fee ($):
-          <input type="number" id="listing-fee" step="0.01" value="0.20">
-        </label>
-        <label>Transaction Fee (%):
-          <input type="number" id="transaction-fee" step="0.1" value="6.5">
-        </label>
-        <br>
-        <label>Payment Processing Fee (%):
-          <input type="number" id="payment-percent" step="0.1" value="3">
-        </label>
-        <label>Payment Fixed Fee ($):
-          <input type="number" id="payment-fixed" step="0.01" value="0.25">
-        </label>
-        <br>
-        <label>Offsite Ads Share of Orders (%):
-          <input type="number" id="ads-share" step="1" value="10">
-        </label>
-        <label>Offsite Ads Fee (%):
-          <input type="number" id="ads-fee" step="0.1" value="15">
-        </label>
-        <br>
-        <button type="button" id="calculate-profit">Calculate</button>
-      </form>
-      <div id="profit-results">
-        <!-- Results will appear here -->
+<!-- ═══════════════════════════
+     MASTHEAD
+═══════════════════════════ -->
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="masthead-top">
+      <div class="masthead-title">
+        <div class="paper-name"><span class="the">The</span>Legacy Front Page</div>
+        <div class="paper-tagline">Newspaper Birthday Poster Shop · Amir &amp; Fauzi · 50 / 50</div>
       </div>
-    </section>
+      <div class="header-stats">
+        <div class="hstat green">
+          <span class="hstat-val" id="hLive">0</span>
+          <span class="hstat-lbl">Live</span>
+        </div>
+        <div class="hstat">
+          <span class="hstat-val" id="hTotal">238</span>
+          <span class="hstat-lbl">Goal</span>
+        </div>
+        <div class="hstat teal">
+          <span class="hstat-val" id="hRev">$0</span>
+          <span class="hstat-lbl">Est /mo</span>
+        </div>
+        <div class="hstat rust">
+          <span class="hstat-val" id="hRemain">238</span>
+          <span class="hstat-lbl">Remain</span>
+        </div>
+      </div>
+    </div>
+    <div class="masthead-progress">
+      <div class="prog-bar-bg">
+        <div class="prog-bar-fill" id="masterProgBar" style="width:0%"></div>
+      </div>
+      <div class="prog-label" id="masterProgLabel">0% · 0/238</div>
+    </div>
+    <nav class="tabs-bar">
+      <button class="tab-btn on" onclick="showView('today',this)">📌 Mission</button>
+      <button class="tab-btn"    onclick="showView('pipeline',this)">📋 Pipeline</button>
+      <button class="tab-btn"    onclick="showView('projections',this)">📈 Projections</button>
+    </nav>
+  </div>
+</header>
+
+<!-- ═══════════════════════════
+     MAIN CONTENT
+═══════════════════════════ -->
+<main class="page">
+
+  <!-- ─────────────────────────────────────────
+       TODAY / MISSION VIEW
+  ───────────────────────────────────────── -->
+  <div id="v-today" class="view on">
+
+    <!-- REAL DATA -->
+    <div class="card" style="margin-bottom:12px;">
+      <div class="section-head">📊 Shop Data <span style="font-size:9px;color:var(--mid);">Update weekly from Etsy</span></div>
+      <div class="real-data-row">
+        <div class="rd-field">
+          <label>Monthly Revenue ($)</label>
+          <input type="number" class="rd-inp" id="rdRevenue" placeholder="0" oninput="saveMisc();renderAll()">
+        </div>
+        <div class="rd-field">
+          <label>Monthly Visits</label>
+          <input type="number" class="rd-inp" id="rdVisits" placeholder="0" oninput="saveMisc();renderAll()">
+        </div>
+        <div class="rd-field">
+          <label>Live Listings (Etsy)</label>
+          <input type="number" class="rd-inp" id="rdLive" placeholder="0" oninput="saveMisc();renderAll()">
+        </div>
+        <div class="rd-field">
+          <label>Daily Target</label>
+          <input type="number" class="rd-inp" id="rdDaily" placeholder="3" oninput="saveMisc();renderAll()">
+        </div>
+      </div>
+    </div>
+
+    <!-- TODAY'S MISSION -->
+    <div class="card rust-top" style="margin-bottom:12px;">
+      <div class="section-head">🎯 Today's Mission <span id="todayDateLabel" style="font-size:9px;color:var(--mid);letter-spacing:0;font-family:Outfit,sans-serif;"></span></div>
+      <div class="mission-grid">
+        <div class="mc mc-teal">
+          <span class="mc-val" id="todayDone">0</span>
+          <span class="mc-lbl">Published<br>Today</span>
+        </div>
+        <div class="mc mc-gold">
+          <span class="mc-val" id="todayTarget">3</span>
+          <span class="mc-lbl">Daily<br>Target</span>
+        </div>
+        <div class="mc mc-green">
+          <span class="mc-val" id="todayAdded">+$0</span>
+          <span class="mc-lbl">Revenue<br>Added Today</span>
+        </div>
+        <div class="mc mc-rust">
+          <span class="mc-val" id="todayRemain">—</span>
+          <span class="mc-lbl">Still<br>Needed</span>
+        </div>
+      </div>
+      <div class="mission-msg" id="missionMsg">Set your daily target above to get started.</div>
+    </div>
+
+    <!-- PARTNER SPLIT -->
+    <div class="split-card">
+      <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--mid);min-width:80px;">50/50 SPLIT</div>
+      <div class="split-person">
+        <div class="split-name">Amir</div>
+        <div class="split-amount" id="amirShare">$0</div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--mid);">per month</div>
+      </div>
+      <div class="split-divider">⊕<br>SHARED</div>
+      <div class="split-person">
+        <div class="split-name">Fauzi</div>
+        <div class="split-amount" id="partnerShare">$0</div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--mid);">per month</div>
+      </div>
+      <div style="flex:1;text-align:right;">
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--mid);margin-bottom:2px;">FULL SCALE POTENTIAL</div>
+        <div class="split-total" id="fullScaleRev">$0/mo</div>
+      </div>
+    </div>
+
+    <!-- TASK LIST -->
+    <div class="card">
+      <div class="flex-row section-head" style="margin-bottom:10px;">
+        <span>📌 Top Priority Listings</span>
+        <div class="flex-row" style="gap:5px;">
+          <select class="fsel" id="fFilterEd" onchange="renderTasks()">
+            <option value="">All Editions</option>
+            <option value="lfp_usa_gen">🇺🇸 USA Generic</option>
+            <option value="lfp_uk_gen">🇬🇧 UK Generic</option>
+            <option value="lfp_can_gen">🇨🇦 Canada Generic</option>
+            <option value="lfp_aus_gen">🇦🇺 Australia Generic</option>
+            <option value="lfp_usa_blk">🇺🇸 USA Black</option>
+            <option value="lfp_uk_blk">🇬🇧 UK Black</option>
+            <option value="lfp_can_blk">🇨🇦 Canada Black</option>
+          </select>
+          <select class="fsel" id="fFilterCat" onchange="renderTasks()">
+            <option value="">All Types</option>
+            <option value="generic">Generic</option>
+            <option value="black">Black Community</option>
+          </select>
+          <select class="fsel" id="fFilterFmt" onchange="renderTasks()">
+            <option value="">All Formats</option>
+            <option value="Custom">Custom</option>
+            <option value="Instant DL">Instant DL</option>
+          </select>
+          <select class="fsel" id="fFilterStatus" onchange="renderTasks()">
+            <option value="pending">Pending Only</option>
+            <option value="all">All</option>
+            <option value="live">Live Only</option>
+          </select>
+        </div>
+      </div>
+      <div id="taskList"></div>
+    </div>
   </div>
 
-  <script>
-    // Data structures
-    let listings = [];
+  <!-- ─────────────────────────────────────────
+       PIPELINE VIEW
+  ───────────────────────────────────────── -->
+  <div id="v-pipeline" class="view">
 
-    const priorityAges = [18, 21, 30, 40, 50, 60, 70, 80];
+    <!-- BATCH OPS -->
+    <div class="card">
+      <div class="section-head">⚡ Batch Operations</div>
 
-    // Load listings from localStorage
-    function loadListings() {
-      const data = localStorage.getItem('lfp_listings');
-      if (data) {
-        try {
-          listings = JSON.parse(data);
-        } catch (e) {
-          console.error('Error parsing listings from localStorage', e);
-          listings = [];
-        }
-      }
-    }
+      <!-- MODE TOGGLE -->
+      <div style="display:flex;gap:0;margin-bottom:12px;border:1px solid var(--border);border-radius:3px;overflow:hidden;width:fit-content;">
+        <button id="batchModeApply" onclick="setBatchMode('apply')"
+          style="font-family:Outfit,sans-serif;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:7px 18px;background:var(--green);color:#fff;border:none;cursor:pointer;transition:all .15s;">
+          ✓ Apply
+        </button>
+        <button id="batchModeUndo" onclick="setBatchMode('undo')"
+          style="font-family:Outfit,sans-serif;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:7px 18px;background:none;color:var(--mid);border:none;border-left:1px solid var(--border);cursor:pointer;transition:all .15s;">
+          ↩ Undo
+        </button>
+      </div>
 
-    // Save listings to localStorage
-    function saveListings() {
-      localStorage.setItem('lfp_listings', JSON.stringify(listings));
-    }
+      <!-- MODE DESCRIPTION -->
+      <div id="batchModeDesc" style="font-family:'DM Mono',monospace;font-size:9px;color:var(--green2);letter-spacing:1px;margin-bottom:10px;">
+        APPLY MODE — marks the selected stage as ✓ done for all matching listings
+      </div>
 
-    // Generate a unique ID for each listing
-    function generateId() {
-      return 'L' + Date.now() + '-' + Math.floor(Math.random() * 1000);
-    }
+      <!-- FILTERS + ACTION -->
+      <div class="batch-row">
+        <select class="fsel" id="batchStage">
+          <option value="">Select stage…</option>
+          <option value="facts">Research &amp; Facts</option>
+          <option value="canva">Canva Design</option>
+          <option value="hero">Hero Image</option>
+          <option value="mockup">Mockup</option>
+          <option value="listing">Etsy Listing Copy</option>
+          <option value="live">Published Live</option>
+        </select>
+        <select class="fsel" id="batchAge">
+          <option value="">Any age</option>
+          <option value="1">1st</option><option value="16">16th</option>
+          <option value="18">18th</option><option value="21">21st</option>
+          <option value="25">25th</option><option value="30">30th</option>
+          <option value="35">35th</option><option value="40">40th</option>
+          <option value="45">45th</option><option value="50">50th</option>
+          <option value="55">55th</option><option value="60">60th</option>
+          <option value="65">65th</option><option value="70">70th</option>
+          <option value="75">75th</option><option value="80">80th</option>
+          <option value="90">90th</option>
+        </select>
+        <select class="fsel" id="batchEd">
+          <option value="">Any edition</option>
+          <option value="lfp_usa_gen">🇺🇸 USA Generic</option>
+          <option value="lfp_uk_gen">🇬🇧 UK Generic</option>
+          <option value="lfp_can_gen">🇨🇦 Canada Generic</option>
+          <option value="lfp_aus_gen">🇦🇺 Australia Generic</option>
+          <option value="lfp_usa_blk">🇺🇸 USA Black</option>
+          <option value="lfp_uk_blk">🇬🇧 UK Black</option>
+          <option value="lfp_can_blk">🇨🇦 Canada Black</option>
+        </select>
+        <select class="fsel" id="batchFmt">
+          <option value="">Any format</option>
+          <option value="Custom">Custom only</option>
+          <option value="Instant DL">Instant DL only</option>
+        </select>
+        <button id="batchActionBtn" class="batch-btn" onclick="batchExecute()" style="background:var(--green);border-color:var(--green);color:#fff;">
+          ✓ Apply Batch
+        </button>
+      </div>
+      <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--mid);margin-top:6px;letter-spacing:.5px;">
+        ⚠ Stage is required. At least one of age / edition / format must also be selected.
+      </div>
+    </div>
 
-    // Add a listing from the form
-    function addListing(event) {
-      event.preventDefault();
-      const age = parseInt(document.getElementById('listing-age').value);
-      const edition = document.getElementById('listing-edition').value;
-      const country = document.getElementById('listing-country').value;
-      if (!age) return;
-      const listing = {
-        id: generateId(),
-        age: age,
-        edition: edition,
-        country: country,
-        tasks: {
-          factsReady: false,
-          bulkCreate: false,
-          editCanva: false,
-          createMockups: false,
-          description: false,
-          publish: false,
-          postReels: false
-        },
-        variations: {
-          v1: false,
-          v2: false,
-          v3: false,
-          v4: false
-        }
-      };
-      listings.push(listing);
-      saveListings();
-      renderTasks();
-      renderPipeline();
-      document.getElementById('add-listing-form').reset();
-    }
+    <!-- PIPELINE TABLE -->
+    <div class="card">
+      <div class="flex-row section-head" style="margin-bottom:10px;">
+        <span>📋 Full Pipeline</span>
+        <div class="flex-row" style="gap:5px;">
+          <select class="fsel" id="pipeEd" onchange="renderPipeline()">
+            <option value="">All Editions</option>
+            <option value="lfp_usa_gen">🇺🇸 USA Generic</option>
+            <option value="lfp_uk_gen">🇬🇧 UK Generic</option>
+            <option value="lfp_can_gen">🇨🇦 Canada Generic</option>
+            <option value="lfp_aus_gen">🇦🇺 Australia Generic</option>
+            <option value="lfp_usa_blk">🇺🇸 USA Black</option>
+            <option value="lfp_uk_blk">🇬🇧 UK Black</option>
+            <option value="lfp_can_blk">🇨🇦 Canada Black</option>
+          </select>
+          <select class="fsel" id="pipeFmt" onchange="renderPipeline()">
+            <option value="">All Formats</option>
+            <option value="Custom">Custom</option>
+            <option value="Instant DL">Instant DL</option>
+          </select>
+          <select class="fsel" id="pipeStatus" onchange="renderPipeline()">
+            <option value="">All Status</option>
+            <option value="not_started">Not Started</option>
+            <option value="in_progress">In Progress</option>
+            <option value="completed">Completed</option>
+          </select>
+          <span class="count-badge" id="pipeCount">238 listings</span>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="ptbl">
+          <thead>
+            <tr>
+              <th>Age</th>
+              <th>Edition</th>
+              <th>Format</th>
+              <th>Research</th>
+              <th>Canva</th>
+              <th>Hero</th>
+              <th>Mockup</th>
+              <th>Copy</th>
+              <th>Live</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="pipeBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 
-    // Render the tasks table
-    function renderTasks() {
-      const tbody = document.getElementById('tasks-body');
-      tbody.innerHTML = '';
-      listings.forEach(listing => {
-        const tr = document.createElement('tr');
-        if (priorityAges.includes(listing.age)) {
-          tr.classList.add('priority');
-        }
-        // Listing details
-        tr.innerHTML = `
-          <td>${listing.id}</td>
-          <td>${listing.age}</td>
-          <td>${listing.edition}</td>
-          <td>${listing.country}</td>
-        `;
-        // Tasks
-        const tasks = ['factsReady','bulkCreate','editCanva','createMockups','description','publish','postReels'];
-        tasks.forEach(taskKey => {
-          const td = document.createElement('td');
-          const input = document.createElement('input');
-          input.type = 'checkbox';
-          input.checked = listing.tasks[taskKey];
-          input.addEventListener('change', (event) => {
-            listing.tasks[taskKey] = event.target.checked;
-            saveListings();
-            renderPipeline();
-          });
-          td.appendChild(input);
-          tr.appendChild(td);
+  <!-- ─────────────────────────────────────────
+       PROJECTIONS VIEW
+  ───────────────────────────────────────── -->
+  <div id="v-projections" class="view">
+
+    <!-- CONTROLS -->
+    <div class="card">
+      <div class="section-head">⚙️ Projection Settings</div>
+      <div class="proj-controls">
+        <div class="rd-field">
+          <label>Daily Publish Rate</label>
+          <input type="number" class="rd-inp" id="projDaily" placeholder="3" value="3" oninput="saveMisc();renderProjections()">
+        </div>
+        <div class="rd-field">
+          <label>Instant DL Price ($)</label>
+          <input type="number" class="rd-inp" id="projPriceDl" placeholder="8.99" value="8.99" step="0.01" oninput="saveMisc();renderProjections()">
+        </div>
+        <div class="rd-field">
+          <label>Custom Price ($)</label>
+          <input type="number" class="rd-inp" id="projPriceCust" placeholder="17.99" value="17.99" step="0.01" oninput="saveMisc();renderProjections()">
+        </div>
+        <div class="rd-field">
+          <label>Your Cut (%)</label>
+          <input type="number" class="rd-inp" id="projSplit" placeholder="50" value="50" oninput="saveMisc();renderProjections()">
+        </div>
+      </div>
+      <!-- Fee breakdown display -->
+      <div id="projFeeBreakdown" style="margin-top:12px;padding:10px 12px;background:var(--ink3);border:1px solid var(--border);border-radius:3px;font-family:'DM Mono',monospace;font-size:9px;color:var(--mid);line-height:1.8;letter-spacing:.5px;"></div>
+    </div>
+
+    <!-- SUMMARY STATS -->
+    <div class="proj-stats-row">
+      <div class="pstat">
+        <span class="pstat-val" id="projDaysLeft">—</span>
+        <span class="pstat-lbl">Days to<br>Full Scale</span>
+      </div>
+      <div class="pstat">
+        <span class="pstat-val" id="projFullRev">—</span>
+        <span class="pstat-lbl">Full Scale<br>Revenue /mo</span>
+      </div>
+      <div class="pstat">
+        <span class="pstat-val" id="projYourCut">—</span>
+        <span class="pstat-lbl">Your Share<br>at Full Scale</span>
+      </div>
+      <div class="pstat">
+        <span class="pstat-val" id="projRemain">—</span>
+        <span class="pstat-lbl">Listings<br>Remaining</span>
+      </div>
+    </div>
+
+    <!-- MILESTONES -->
+    <div class="card teal-top">
+      <div class="section-head">🏆 Revenue Milestones</div>
+      <div id="milestones"></div>
+    </div>
+
+    <!-- EDITION BREAKDOWN -->
+    <div class="card">
+      <div class="section-head">📊 Progress by Edition</div>
+      <div id="edBreakdown"></div>
+    </div>
+
+  </div>
+
+</main>
+
+<!-- ═══════════════════════════
+     JAVASCRIPT
+═══════════════════════════ -->
+<script>
+'use strict';
+// ════════════════════════════════════════════
+// DATA MODEL
+// ════════════════════════════════════════════
+
+var STORAGE_KEY = 'lfp_standalone_v1_listings';
+var MISC_KEY    = 'lfp_standalone_v1_misc';
+
+var EDITIONS = [
+  {id:'lfp_usa_gen', name:'USA Generic',       flag:'🇺🇸', cat:'generic'},
+  {id:'lfp_uk_gen',  name:'UK Generic',        flag:'🇬🇧', cat:'generic'},
+  {id:'lfp_can_gen', name:'Canada Generic',    flag:'🇨🇦', cat:'generic'},
+  {id:'lfp_aus_gen', name:'Australia Generic', flag:'🇦🇺', cat:'generic'},
+  {id:'lfp_usa_blk', name:'USA Black',         flag:'🇺🇸', cat:'black'},
+  {id:'lfp_uk_blk',  name:'UK Black',          flag:'🇬🇧', cat:'black'},
+  {id:'lfp_can_blk', name:'Canada Black',      flag:'🇨🇦', cat:'black'}
+];
+
+var AGES = [
+  {age:1, label:'1st'}, {age:16,label:'16th'},{age:18,label:'18th'},
+  {age:21,label:'21st'},{age:25,label:'25th'},{age:30,label:'30th'},
+  {age:35,label:'35th'},{age:40,label:'40th'},{age:45,label:'45th'},
+  {age:50,label:'50th'},{age:55,label:'55th'},{age:60,label:'60th'},
+  {age:65,label:'65th'},{age:70,label:'70th'},{age:75,label:'75th'},
+  {age:80,label:'80th'},{age:90,label:'90th'}
+];
+
+var FMTS = ['Custom','Instant DL'];
+
+// Priority: lower = higher priority in task list
+var AGE_PRI = {50:1,40:2,60:3,30:4,21:5,25:6,70:7,35:8,45:9,80:10,55:11,65:12,75:13,18:14,90:15,16:16,1:17};
+var ED_PRI  = {lfp_usa_gen:1,lfp_uk_gen:2,lfp_usa_blk:3,lfp_can_gen:4,lfp_uk_blk:5,lfp_aus_gen:6,lfp_can_blk:7};
+
+var STAGES     = ['facts','canva','hero','mockup','listing','live'];
+var STAGE_NAMES= {facts:'Research',canva:'Canva',hero:'Hero',mockup:'Mockup',listing:'Copy',live:'Live'};
+
+// ── State ──
+var listings = [];
+var misc = {
+  revenue:0, visits:0, etsyLive:0, dailyTarget:3,
+  projDaily:3, projPriceDl:8.99, projPriceCust:17.99, projSplit:50,
+  dailyPublished:{},
+  curView:'today'
+};
+
+// ════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════
+function init(){
+  loadState();
+  // Sync inputs
+  syncInputs();
+  // Render
+  renderAll();
+  renderPipeline();
+  renderProjections();
+  // Set date
+  var d = new Date();
+  var el = document.getElementById('todayDateLabel');
+  if(el) el.textContent = d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+  // Show saved view
+  var tab = document.querySelector('.tab-btn.on');
+  showView(misc.curView || 'today', tab);
+}
+
+// ════════════════════════════════════════════
+// LISTINGS GENERATION
+// ════════════════════════════════════════════
+function blankStages(){
+  var s = {};
+  STAGES.forEach(function(id){ s[id] = false; });
+  return s;
+}
+
+function pad(n,l){ var s=String(n); while(s.length<l) s='0'+s; return s; }
+
+function generateListings(){
+  var out = [], n = 1;
+  AGES.forEach(function(ag){
+    EDITIONS.forEach(function(ed){
+      FMTS.forEach(function(fmt){
+        var ap = AGE_PRI[ag.age] || 99;
+        var ep = ED_PRI[ed.id] || 99;
+        out.push({
+          id:       'LFP' + pad(n++, 4),
+          ageVal:   ag.age,
+          ageLabel: ag.label,
+          edId:     ed.id,
+          edName:   ed.name,
+          edFlag:   ed.flag,
+          edCat:    ed.cat,
+          format:   fmt,
+          stages:   blankStages(),
+          notes:    '',
+          lastTouched: 0,
+          _pri: ap * 10 + ep
         });
-        tbody.appendChild(tr);
       });
-    }
-
-    // Render the pipeline table
-    function renderPipeline() {
-      const tbody = document.getElementById('pipeline-body');
-      tbody.innerHTML = '';
-      listings.forEach(listing => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${listing.id}</td>
-          <td>${listing.age}</td>
-          <td>${listing.edition}</td>
-          <td>${listing.country}</td>
-        `;
-        // Variation checkboxes
-        ['v1','v2','v3','v4'].forEach(varKey => {
-          const td = document.createElement('td');
-          const input = document.createElement('input');
-          input.type = 'checkbox';
-          input.checked = listing.variations[varKey];
-          input.addEventListener('change', (event) => {
-            listing.variations[varKey] = event.target.checked;
-            saveListings();
-            renderPipeline();
-          });
-          td.appendChild(input);
-          tr.appendChild(td);
-        });
-        // Progress bar cell
-        const progressCell = document.createElement('td');
-        const progressContainer = document.createElement('div');
-        progressContainer.className = 'status-bar';
-        const progressFill = document.createElement('div');
-        progressFill.className = 'status-fill';
-        const completedCount = Object.values(listing.variations).filter(v => v).length;
-        const percent = (completedCount / 4) * 100;
-        progressFill.style.width = percent + '%';
-        progressContainer.appendChild(progressFill);
-        progressCell.appendChild(progressContainer);
-        tr.appendChild(progressCell);
-        tbody.appendChild(tr);
-      });
-    }
-
-    // Switch between sections
-    function switchSection(event) {
-      const target = event.target;
-      if (!target || !target.hash) return;
-      event.preventDefault();
-      const sections = document.querySelectorAll('section');
-      sections.forEach(sec => sec.classList.remove('active'));
-      const navLinks = document.querySelectorAll('nav a');
-      navLinks.forEach(link => link.classList.remove('active'));
-      const sectionId = target.hash.substring(1) + '-section';
-      document.getElementById(sectionId).classList.add('active');
-      target.classList.add('active');
-    }
-
-    // Profit calculation helper
-    function calculateProfit() {
-      const instantOrders = parseInt(document.getElementById('instant-orders').value) || 0;
-      const instantPrice = parseFloat(document.getElementById('instant-price').value) || 0;
-      const customOrders = parseInt(document.getElementById('custom-orders').value) || 0;
-      const customPrice = parseFloat(document.getElementById('custom-price').value) || 0;
-      const listingFee = parseFloat(document.getElementById('listing-fee').value) || 0;
-      const transactionFee = parseFloat(document.getElementById('transaction-fee').value) / 100 || 0;
-      const paymentPercent = parseFloat(document.getElementById('payment-percent').value) / 100 || 0;
-      const paymentFixed = parseFloat(document.getElementById('payment-fixed').value) || 0;
-      const adsShare = parseFloat(document.getElementById('ads-share').value) / 100 || 0;
-      const adsFee = parseFloat(document.getElementById('ads-fee').value) / 100 || 0;
-
-      // Net per order calculations
-      function netPerOrder(price) {
-        // base net: price minus transaction fee and payment processing
-        let net = price * (1 - transactionFee - paymentPercent);
-        // subtract payment fixed fee
-        net -= paymentFixed;
-        // subtract listing fee (for digital products this is usually per order; assume listing fee for each sale)
-        net -= listingFee;
-        // subtract offsite ads cost for a percentage of orders
-        const adsCost = price * adsFee * adsShare;
-        net -= adsCost;
-        return net;
-      }
-      const netInstant = netPerOrder(instantPrice);
-      const netCustom = netPerOrder(customPrice);
-      const totalOrders = instantOrders + customOrders;
-      const totalGross = (instantOrders * instantPrice) + (customOrders * customPrice);
-      const totalNet = (instantOrders * netInstant) + (customOrders * netCustom);
-      // required orders to hit 10k net
-      const averageNet = totalOrders > 0 ? totalNet / totalOrders : 0;
-      const requiredOrders = averageNet > 0 ? Math.ceil(10000 / averageNet) : 0;
-
-      const resultsDiv = document.getElementById('profit-results');
-      resultsDiv.innerHTML = '';
-      const grossEl = document.createElement('p');
-      grossEl.textContent = `Total Monthly Gross Revenue: $${totalGross.toFixed(2)}`;
-      const netEl = document.createElement('p');
-      netEl.textContent = `Total Monthly Net Profit (after fees): $${totalNet.toFixed(2)}`;
-      const progressEl = document.createElement('p');
-      const progressPct = totalNet / 10000;
-      const pctStr = (progressPct * 100).toFixed(1);
-      progressEl.textContent = `Progress toward $10k goal: ${pctStr}%`;
-      const requiredEl = document.createElement('p');
-      if (averageNet > 0) {
-        requiredEl.textContent = `You need approximately ${requiredOrders} total orders per month at this pricing mix to reach $10k net profit.`;
-      } else {
-        requiredEl.textContent = 'Please enter some orders to compute required orders.';
-      }
-      resultsDiv.appendChild(grossEl);
-      resultsDiv.appendChild(netEl);
-      resultsDiv.appendChild(progressEl);
-      resultsDiv.appendChild(requiredEl);
-    }
-
-    // Event listeners
-    document.getElementById('add-listing-form').addEventListener('submit', addListing);
-    document.getElementById('calculate-profit').addEventListener('click', calculateProfit);
-    document.querySelectorAll('nav a').forEach(link => {
-      link.addEventListener('click', switchSection);
     });
+  });
+  out.sort(function(a,b){ return a._pri - b._pri; });
+  return out;
+}
 
-    // Initialize
-    loadListings();
-    renderTasks();
-    renderPipeline();
-  </script>
+// ════════════════════════════════════════════
+// PERSISTENCE
+// ════════════════════════════════════════════
+function loadState(){
+  listings = generateListings();
+  try {
+    var saved = localStorage.getItem(STORAGE_KEY);
+    if(saved){
+      var arr = JSON.parse(saved);
+      var map = {};
+      arr.forEach(function(x){ map[x.id] = x; });
+      listings.forEach(function(l){
+        if(map[l.id]){
+          l.stages      = map[l.id].stages      || blankStages();
+          l.notes       = map[l.id].notes       || '';
+          l.lastTouched = map[l.id].lastTouched || 0;
+        }
+      });
+    }
+  } catch(e){ console.warn('Load listings:', e); }
+  try {
+    var m = localStorage.getItem(MISC_KEY);
+    if(m){
+      var p = JSON.parse(m);
+      Object.keys(misc).forEach(function(k){ if(k in p) misc[k] = p[k]; });
+    }
+  } catch(e){ console.warn('Load misc:', e); }
+}
+
+function saveListings(){
+  try {
+    var slim = listings.map(function(l){
+      return {id:l.id, stages:l.stages, notes:l.notes, lastTouched:l.lastTouched||0};
+    });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(slim));
+  } catch(e){ console.warn('Save listings:', e); }
+}
+
+function saveMisc(){
+  // Pull from inputs
+  var g = function(id){ return document.getElementById(id); };
+  var rv=g('rdRevenue'), vi=g('rdVisits'), li=g('rdLive'), dt=g('rdDaily');
+  var pd=g('projDaily'), pl=g('projPriceDl'), pc=g('projPriceCust'), sp=g('projSplit');
+  if(rv && rv.value!=='') misc.revenue     = parseFloat(rv.value)||0;
+  if(vi && vi.value!=='') misc.visits      = parseFloat(vi.value)||0;
+  if(li && li.value!=='') misc.etsyLive    = parseFloat(li.value)||0;
+  if(dt && dt.value!=='') misc.dailyTarget = parseFloat(dt.value)||3;
+  if(pd && pd.value!=='') misc.projDaily   = parseFloat(pd.value)||3;
+  if(pl && pl.value!=='') misc.projPriceDl = parseFloat(pl.value)||8.99;
+  if(pc && pc.value!=='') misc.projPriceCust= parseFloat(pc.value)||17.99;
+  if(sp && sp.value!=='') misc.projSplit   = parseFloat(sp.value)||50;
+  try { localStorage.setItem(MISC_KEY, JSON.stringify(misc)); } catch(e){}
+}
+
+function syncInputs(){
+  var sv = function(id, val){
+    var e = document.getElementById(id);
+    if(e && document.activeElement !== e) e.value = val;
+  };
+  sv('rdRevenue',      misc.revenue||'');
+  sv('rdVisits',       misc.visits||'');
+  sv('rdLive',         misc.etsyLive||'');
+  sv('rdDaily',        misc.dailyTarget||3);
+  sv('projDaily',      misc.projDaily||3);
+  sv('projPriceDl',    misc.projPriceDl||8.99);
+  sv('projPriceCust',  misc.projPriceCust||17.99);
+  sv('projSplit',      misc.projSplit||50);
+}
+
+// ════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════
+function getStatus(l){
+  if(l.stages.live) return 'completed';
+  var any = STAGES.some(function(s){ return l.stages[s]; });
+  return any ? 'in_progress' : 'not_started';
+}
+
+function getNextStage(l){
+  return STAGES.find(function(s){ return !l.stages[s]; });
+}
+
+function todayStr(){
+  var d = new Date();
+  return d.getFullYear()+'-'+pad(d.getMonth()+1,2)+'-'+pad(d.getDate(),2);
+}
+
+function getTodayPublished(){
+  var td = todayStr();
+  return (misc.dailyPublished && misc.dailyPublished[td]) || 0;
+}
+
+// ════════════════════════════════════════════
+// MARK ACTIONS
+// ════════════════════════════════════════════
+function markStage(lid, sid, val){
+  var l = listings.find(function(x){ return x.id === lid; });
+  if(!l) return;
+  l.stages[sid]  = val;
+  l.lastTouched  = Date.now();
+  if(sid === 'live' && val){
+    var td = todayStr();
+    if(!misc.dailyPublished) misc.dailyPublished = {};
+    misc.dailyPublished[td] = (misc.dailyPublished[td]||0) + 1;
+    misc.live = listings.filter(function(x){ return x.stages.live; }).length;
+    try { localStorage.setItem(MISC_KEY, JSON.stringify(misc)); } catch(e){}
+    toast('🎉 Live! +$' + ((calcNetPerSale(misc.projPriceDl||8.99)+calcNetPerSale(misc.projPriceCust||17.99))/2).toFixed(2) + '/mo avg forever.');
+  }
+  saveListings();
+  renderAll();
+  // Re-render pipeline if visible
+  var pv = document.getElementById('v-pipeline');
+  if(pv && pv.classList.contains('on')) renderPipeline();
+}
+
+function markAllStages(lid){
+  var l = listings.find(function(x){ return x.id === lid; });
+  if(!l) return;
+  var wasLive = l.stages.live;
+  STAGES.forEach(function(s){ l.stages[s] = true; });
+  l.lastTouched = Date.now();
+  if(!wasLive){
+    var td = todayStr();
+    if(!misc.dailyPublished) misc.dailyPublished = {};
+    misc.dailyPublished[td] = (misc.dailyPublished[td]||0) + 1;
+    misc.live = listings.filter(function(x){ return x.stages.live; }).length;
+    try { localStorage.setItem(MISC_KEY, JSON.stringify(misc)); } catch(e){}
+    toast('🎉 Published! +$' + ((calcNetPerSale(misc.projPriceDl||8.99)+calcNetPerSale(misc.projPriceCust||17.99))/2).toFixed(2) + '/mo avg forever.');
+  }
+  saveListings();
+  renderAll();
+  var pv = document.getElementById('v-pipeline');
+  if(pv && pv.classList.contains('on')) renderPipeline();
+}
+
+// ════════════════════════════════════════════
+// BATCH OPERATIONS — Apply / Undo mode
+// ════════════════════════════════════════════
+var batchMode = 'apply'; // 'apply' | 'undo'
+
+function setBatchMode(mode){
+  batchMode = mode;
+  var applyBtn = document.getElementById('batchModeApply');
+  var undoBtn  = document.getElementById('batchModeUndo');
+  var desc     = document.getElementById('batchModeDesc');
+  var actionBtn= document.getElementById('batchActionBtn');
+
+  if(mode === 'apply'){
+    if(applyBtn){ applyBtn.style.background='var(--green)'; applyBtn.style.color='#fff'; }
+    if(undoBtn){  undoBtn.style.background='none';          undoBtn.style.color='var(--mid)'; }
+    if(desc){     desc.style.color='var(--green2)'; desc.textContent='APPLY MODE — marks the selected stage as \u2713 done for all matching listings'; }
+    if(actionBtn){ actionBtn.textContent='\u2713 Apply Batch'; actionBtn.style.background='var(--green)'; actionBtn.style.borderColor='var(--green)'; actionBtn.style.color='#fff'; }
+  } else {
+    if(applyBtn){ applyBtn.style.background='none'; applyBtn.style.color='var(--mid)'; }
+    if(undoBtn){  undoBtn.style.background='var(--rust2)'; undoBtn.style.color='#fff'; }
+    if(desc){     desc.style.color='var(--rust2)'; desc.textContent='UNDO MODE — unmarks the selected stage for all matching listings'; }
+    if(actionBtn){ actionBtn.textContent='\u21A9 Undo Batch'; actionBtn.style.background='var(--rust2)'; actionBtn.style.borderColor='var(--rust2)'; actionBtn.style.color='#fff'; }
+  }
+}
+
+function batchExecute(){
+  var stage = (document.getElementById('batchStage')||{}).value||'';
+  var age   = (document.getElementById('batchAge')||{}).value||'';
+  var ed    = (document.getElementById('batchEd')||{}).value||'';
+  var fmt   = (document.getElementById('batchFmt')||{}).value||'';
+
+  if(!stage){ alert('Select a stage first.'); return; }
+  if(!age && !ed && !fmt){ alert('Select at least one filter — age, edition, or format.'); return; }
+
+  var isApply = batchMode === 'apply';
+
+  // Build affected pool
+  var affected = listings.filter(function(l){
+    if(age && String(l.ageVal) !== String(age)) return false;
+    if(ed  && l.edId   !== ed)  return false;
+    if(fmt && l.format !== fmt) return false;
+    // Apply: only listings where stage is NOT yet done
+    // Undo:  only listings where stage IS done
+    return isApply ? !l.stages[stage] : !!l.stages[stage];
+  });
+
+  if(!affected.length){
+    toast(isApply
+      ? 'Nothing to apply — all matching listings already have ' + STAGE_NAMES[stage] + ' done.'
+      : 'Nothing to undo — no matching listings have ' + STAGE_NAMES[stage] + ' marked.');
+    return;
+  }
+
+  // Apply the change
+  affected.forEach(function(l){
+    l.stages[stage] = isApply;
+    l.lastTouched   = Date.now();
+  });
+
+  if(stage === 'live'){
+    misc.live = listings.filter(function(l){ return l.stages.live; }).length;
+    try { localStorage.setItem(MISC_KEY, JSON.stringify(misc)); } catch(e){}
+  }
+  saveListings();
+  renderAll();
+  renderPipeline();
+
+  var verb = isApply ? 'Marked' : 'Unmarked';
+  toast((isApply ? '\u2713 ' : '\u21A9 ') + verb + ' ' + affected.length + ' listings: ' + STAGE_NAMES[stage]);
+}
+
+// Keep old names as aliases so nothing else breaks
+function batchMark(){ batchExecute(); }
+function batchUndo(){ setBatchMode('undo'); batchExecute(); }
+
+// ════════════════════════════════════════════
+// RENDER — HEADER STATS
+// ════════════════════════════════════════════
+function renderHeaderStats(){
+  var live  = listings.filter(function(l){ return l.stages.live; }).length;
+  var total = 238;
+  var pct   = Math.round(live / total * 100);
+  var pDl   = misc.projPriceDl   || 8.99;
+  var pCust = misc.projPriceCust || 17.99;
+  var liveDl   = listings.filter(function(l){ return l.stages.live && l.format==='Instant DL'; }).length;
+  var liveCust = listings.filter(function(l){ return l.stages.live && l.format==='Custom'; }).length;
+  var rev   = Math.round(liveDl * calcNetPerSale(pDl) + liveCust * calcNetPerSale(pCust));
+
+  var s = function(id,v){ var e=document.getElementById(id); if(e) e.textContent=v; };
+  s('hLive',    live);
+  s('hTotal',   total);
+  s('hRev',     '$' + rev.toLocaleString());
+  s('hRemain',  total - live);
+
+  var bar = document.getElementById('masterProgBar');
+  if(bar) bar.style.width = Math.max(0, pct) + '%';
+  var lbl = document.getElementById('masterProgLabel');
+  if(lbl) lbl.textContent = pct + '% · ' + live + '/' + total;
+}
+
+// ════════════════════════════════════════════
+// RENDER — MISSION
+// ════════════════════════════════════════════
+function renderMission(){
+  var tgt   = Math.max(1, Math.round(misc.dailyTarget || 3));
+  var done  = getTodayPublished();
+  var pDl   = misc.projPriceDl   || 8.99;
+  var pCust = misc.projPriceCust || 17.99;
+  var netDl = calcNetPerSale(pDl);
+  var netCust = calcNetPerSale(pCust);
+  var avgRpl = (netDl + netCust) / 2;
+  var added = done * avgRpl;
+  var remain= Math.max(0, tgt - done);
+  var live  = listings.filter(function(l){ return l.stages.live; }).length;
+  var liveDl   = listings.filter(function(l){ return l.stages.live && l.format==='Instant DL'; }).length;
+  var liveCust = listings.filter(function(l){ return l.stages.live && l.format==='Custom'; }).length;
+  var split = (misc.projSplit || 50) / 100;
+  var fullNetTotal = 119 * netDl + 119 * netCust;
+  var yourFullShare = Math.round(fullNetTotal * split);
+  var curNet = Math.round(liveDl * netDl + liveCust * netCust);
+
+  var s = function(id, v, c){
+    var e = document.getElementById(id);
+    if(e){ e.textContent = v; if(c) e.style.color = c; }
+  };
+  s('todayTarget', tgt);
+  s('todayDone',   done, done >= tgt ? 'var(--green2)' : done > 0 ? 'var(--teal)' : 'var(--rust2)');
+  s('todayAdded',  '+$' + added.toFixed(added < 10 ? 2 : 0), done === 0 ? 'var(--mid)' : done >= 3 ? 'var(--green2)' : 'var(--teal)');
+  s('todayRemain', remain > 0 ? remain + ' more' : '✓ Done!', remain === 0 ? 'var(--green2)' : 'var(--rust2)');
+
+  // Partner split
+  s('amirShare',    '$' + Math.round(curNet * split).toLocaleString());
+  s('partnerShare', '$' + Math.round(curNet * (1 - split)).toLocaleString());
+  s('fullScaleRev', '$' + Math.round(fullNetTotal).toLocaleString() + '/mo');
+
+  var msg = '';
+  if(done >= tgt){
+    msg = '🏆 <strong style="color:var(--green2);">Target smashed!</strong> ' + done + '/' + tgt + ' listings published today. Every listing compounds forever.';
+  } else if(done > 0){
+    msg = '⚡ <strong style="color:var(--teal);">' + done + ' down, ' + remain + ' to go.</strong> Keep the momentum — each new listing earns <strong style="color:var(--gold);">$' + avgRpl.toFixed(2) + '/mo</strong> on average.';
+  } else {
+    msg = '🗞 Publish <strong style="color:var(--gold2);">' + tgt + ' listings</strong> today. Each one is a permanent income stream. Start with the top-priority task below.';
+  }
+  var msgEl = document.getElementById('missionMsg');
+  if(msgEl) msgEl.innerHTML = msg;
+
+  syncInputs();
+}
+
+// ════════════════════════════════════════════
+// RENDER — TASK LIST
+// ════════════════════════════════════════════
+function renderTasks(){
+  var el = document.getElementById('taskList');
+  if(!el) return;
+
+  var edF  = (document.getElementById('fFilterEd')||{}).value||'';
+  var catF = (document.getElementById('fFilterCat')||{}).value||'';
+  var fmtF = (document.getElementById('fFilterFmt')||{}).value||'';
+  var stF  = (document.getElementById('fFilterStatus')||{}).value||'pending';
+
+  var pool = listings.filter(function(l){
+    if(edF  && l.edId   !== edF)  return false;
+    if(catF && l.edCat  !== catF) return false;
+    if(fmtF && l.format !== fmtF) return false;
+    var st = getStatus(l);
+    if(stF === 'pending' && st === 'completed') return false;
+    if(stF === 'live'    && st !== 'completed') return false;
+    return true;
+  });
+
+  pool.sort(function(a,b){
+    var sa = getStatus(a), sb = getStatus(b);
+    if(sa === 'in_progress' && sb !== 'in_progress') return -1;
+    if(sb === 'in_progress' && sa !== 'in_progress') return 1;
+    return a._pri - b._pri;
+  });
+
+  var show = pool.slice(0, 18);
+  if(!show.length){
+    el.innerHTML = '<div style="font-size:12px;color:var(--mid);padding:14px 0;text-align:center;">No listings match this filter.</div>';
+    return;
+  }
+
+  el.innerHTML = show.map(function(l){
+    var st      = getStatus(l);
+    var next    = getNextStage(l);
+    var isDone  = st === 'completed';
+    var isIP    = st === 'in_progress';
+
+    var dots = STAGES.map(function(s){
+      var done   = l.stages[s];
+      var isNext = !isDone && s === next;
+      var cls    = done ? 'done' : isNext ? 'next' : '';
+      var newVal = done ? 'false' : 'true';
+      return '<button class="sdot ' + cls + '" data-lid="' + l.id + '" data-sid="' + s + '" data-val="' + newVal + '" onclick="handleDot(this)" title="' + (done?'Undo ':'') + STAGE_NAMES[s] + '"></button>';
+    }).join('');
+
+    var taskClass = isDone ? 'task-item done' : isIP ? 'task-item inprog' : 'task-item';
+
+    return '<div class="' + taskClass + '">'
+      + '<div class="task-age">' + l.ageLabel + '</div>'
+      + '<div class="task-info">'
+        + '<div class="task-name">' + l.edFlag + ' ' + l.edName
+          + ' <span class="badge-cat ' + (l.edCat==='black'?'badge-blk':'badge-gen') + '">' + (l.edCat==='black'?'BLK':'GEN') + '</span>'
+          + ' <span class="' + (l.format==='Custom'?'badge-cust':'badge-dl') + '">' + l.format + '</span>'
+        + '</div>'
+        + '<div class="stage-dots">' + dots
+          + '<span class="stage-status">' + (isDone ? '✓ Live' : isIP ? 'In Progress' : 'Not Started') + '</span>'
+        + '</div>'
+      + '</div>'
+      + (isDone ? '' : '<button class="mark-live-btn" data-lid="' + l.id + '" onclick="handleMarkLive(this)">✓ Mark Live</button>')
+      + '</div>';
+  }).join('');
+}
+
+// ════════════════════════════════════════════
+// RENDER — PIPELINE TABLE
+// ════════════════════════════════════════════
+function renderPipeline(){
+  var edF  = (document.getElementById('pipeEd')||{}).value||'';
+  var fmtF = (document.getElementById('pipeFmt')||{}).value||'';
+  var stF  = (document.getElementById('pipeStatus')||{}).value||'';
+
+  var pool = listings.filter(function(l){
+    if(edF  && l.edId   !== edF)  return false;
+    if(fmtF && l.format !== fmtF) return false;
+    if(stF){ var s = getStatus(l); if(s !== stF) return false; }
+    return true;
+  });
+
+  var cnt = document.getElementById('pipeCount');
+  if(cnt) cnt.textContent = pool.length + ' listings';
+
+  var tbody = document.getElementById('pipeBody');
+  if(!tbody) return;
+
+  if(!pool.length){
+    tbody.innerHTML = '<tr><td colspan="10" style="padding:16px;text-align:center;color:var(--mid);">No listings match filter.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = pool.map(function(l){
+    var st     = getStatus(l);
+    var isDone = st === 'completed';
+    var isIP   = st === 'in_progress';
+    var rowBg  = isDone ? 'rgba(45,122,80,.06)' : isIP ? 'rgba(201,151,58,.05)' : '';
+    var cells  = STAGES.map(function(s){
+      var done = l.stages[s];
+      var newVal = done ? 'false' : 'true';
+      return '<td style="padding:4px;text-align:center;">'
+        + '<span class="stage-sq" style="background:' + (done?'var(--green2)':'var(--border)') + ';" '
+        + 'data-lid="' + l.id + '" data-sid="' + s + '" data-val="' + newVal + '" onclick="handlePipeDot(this)" '
+        + 'title="' + (done?'Undo ':'Mark ') + STAGE_NAMES[s] + '"></span>'
+        + '</td>';
+    }).join('');
+    var stLbl = isDone
+      ? '<span style="color:var(--green2);font-size:9px;">✓ Live</span>'
+      : isIP
+        ? '<span style="color:var(--gold);font-size:9px;">In Prog</span>'
+        : '<span style="color:var(--mid);font-size:9px;">—</span>';
+
+    return '<tr style="background:' + rowBg + ';border-bottom:1px solid var(--border);">'
+      + '<td style="font-family:Playfair Display,serif;font-weight:700;color:var(--paper);white-space:nowrap;padding:6px 10px;">' + l.ageLabel + '</td>'
+      + '<td style="padding:6px 10px;white-space:nowrap;">' + l.edFlag + ' <span style="font-size:11px;color:var(--paper2);">' + l.edName + '</span></td>'
+      + '<td style="padding:6px 10px;font-size:11px;color:' + (l.format==='Custom'?'var(--rust2)':'var(--green2)') + ';">' + l.format + '</td>'
+      + cells
+      + '<td style="padding:6px 10px;">' + stLbl + '</td>'
+      + '</tr>';
+  }).join('');
+}
+
+// ════════════════════════════════════════════
+// RENDER — PROJECTIONS
+// ════════════════════════════════════════════
+
+// Etsy fee structure (standard seller):
+//   Transaction fee:    6.5% of sale price
+//   Payment processing: 3.0% + $0.25 per transaction
+//   Listing renewal:    $0.20 per sale
+function calcNetPerSale(price){
+  var txn     = price * 0.065;
+  var payment = price * 0.03 + 0.25;
+  var listing = 0.20;
+  return price - txn - payment - listing;
+}
+
+function renderProjections(){
+  var daily    = parseFloat((document.getElementById('projDaily')||{}).value)    || 3;
+  var priceDl  = parseFloat((document.getElementById('projPriceDl')||{}).value)  || 8.99;
+  var priceCust= parseFloat((document.getElementById('projPriceCust')||{}).value)|| 17.99;
+  var split    = parseFloat((document.getElementById('projSplit')||{}).value)    || 50;
+
+  var netDl   = calcNetPerSale(priceDl);
+  var netCust = calcNetPerSale(priceCust);
+  var avgRpl  = (netDl + netCust) / 2; // 50/50 DL:Custom mix
+
+  // Fee breakdown panel
+  var fbEl = document.getElementById('projFeeBreakdown');
+  if(fbEl){
+    var r = function(n){ return n.toFixed(2); };
+    fbEl.innerHTML =
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 24px;">'
+      + '<span style="color:var(--paper2);font-size:10px;">INSTANT DL @ $' + r(priceDl) + '</span>'
+      + '<span style="color:var(--paper2);font-size:10px;">CUSTOM @ $' + r(priceCust) + '</span>'
+      + '<span>Etsy txn (6.5%): &minus;$' + r(priceDl*0.065) + '</span>'
+      + '<span>Etsy txn (6.5%): &minus;$' + r(priceCust*0.065) + '</span>'
+      + '<span>Payment (3%+$0.25): &minus;$' + r(priceDl*0.03+0.25) + '</span>'
+      + '<span>Payment (3%+$0.25): &minus;$' + r(priceCust*0.03+0.25) + '</span>'
+      + '<span>Listing renewal: &minus;$0.20</span>'
+      + '<span>Listing renewal: &minus;$0.20</span>'
+      + '<span style="color:var(--green2);">Net per sale: <strong>$' + r(netDl) + '</strong></span>'
+      + '<span style="color:var(--green2);">Net per sale: <strong>$' + r(netCust) + '</strong></span>'
+      + '</div>'
+      + '<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);color:var(--gold);font-size:10px;">'
+      + '&#x2300; TRUE AVG RPL (50/50 mix): <strong style="color:var(--gold2);font-size:12px;">$' + r(avgRpl) + '</strong> per listing per sale'
+      + '</div>';
+  }
+
+  var live   = listings.filter(function(l){ return l.stages.live; }).length;
+  // Count live DL and Custom separately for current revenue
+  var liveDl   = listings.filter(function(l){ return l.stages.live && l.format === 'Instant DL'; }).length;
+  var liveCust = listings.filter(function(l){ return l.stages.live && l.format === 'Custom'; }).length;
+
+  var remain   = 238 - live;
+  var daysLeft = remain > 0 ? Math.ceil(remain / daily) : 0;
+
+  // Full-scale: 119 DL + 119 Custom
+  var fullNetTotal = 119 * netDl + 119 * netCust;
+  var yourFullCut  = fullNetTotal * split / 100;
+
+  // Current revenue (live listings, actual format mix)
+  var curNet   = liveDl * netDl + liveCust * netCust;
+
+  var s = function(id, v){ var e = document.getElementById(id); if(e) e.textContent = v; };
+  var r2 = function(n){ return '$' + Math.round(n).toLocaleString(); };
+  s('projDaysLeft', daysLeft > 0 ? daysLeft + 'd' : '✓ Done!');
+  s('projFullRev',  r2(fullNetTotal) + '/mo');
+  s('projYourCut',  r2(yourFullCut)  + '/mo');
+  s('projRemain',   remain);
+
+  // MILESTONES
+  var msEl = document.getElementById('milestones');
+  if(msEl){
+    var milestones = [
+      {label:'First 10 live',                   count:10},
+      {label:'50 listings live',                count:50},
+      {label:'One full age (14 listings)',       count:14},
+      {label:'All USA Generic done (34 total)',  count:34},
+      {label:'100 listings live',               count:100},
+      {label:'Half complete (119)',             count:119},
+      {label:'Full scale — 238 listings',       count:238}
+    ];
+    msEl.innerHTML = milestones.map(function(ms){
+      // Each milestone count = ms.count/2 DL + ms.count/2 Custom (rounded)
+      var nDl   = Math.floor(ms.count / 2);
+      var nCust = ms.count - nDl;
+      var rev   = Math.round(nDl * netDl + nCust * netCust);
+      var cut   = Math.round(rev * split / 100);
+      var done  = live >= ms.count;
+      var pct   = Math.min(100, Math.round(live / ms.count * 100));
+      var barClr = done ? 'var(--green2)' : pct > 50 ? 'var(--teal)' : 'var(--gold)';
+      return '<div class="milestone-item">'
+        + '<div style="font-size:18px;">' + (done?'✅':'⬜') + '</div>'
+        + '<div style="flex:1;">'
+          + '<div style="font-size:11px;color:' + (done?'var(--green2)':'var(--paper2)') + ';">' + ms.label + '</div>'
+          + '<div class="ms-bar-bg"><div class="ms-bar-fill" style="width:' + pct + '%;background:' + barClr + ';"></div></div>'
+        + '</div>'
+        + '<div style="text-align:right;min-width:110px;">'
+          + '<div style="font-family:Playfair Display,serif;font-size:14px;font-weight:700;color:var(--gold);">$' + rev.toLocaleString() + '/mo</div>'
+          + '<div style="font-family:DM Mono,monospace;font-size:9px;color:var(--mid);">Your share: $' + cut.toLocaleString() + '</div>'
+        + '</div>'
+        + '</div>';
+    }).join('');
+  }
+
+  // EDITION BREAKDOWN — use actual format split per edition
+  var edEl = document.getElementById('edBreakdown');
+  if(edEl){
+    edEl.innerHTML = EDITIONS.map(function(ed){
+      var edL     = listings.filter(function(l){ return l.edId === ed.id; });
+      var edLive  = edL.filter(function(l){ return l.stages.live; }).length;
+      var edLiveDl   = edL.filter(function(l){ return l.stages.live && l.format==='Instant DL'; }).length;
+      var edLiveCust = edL.filter(function(l){ return l.stages.live && l.format==='Custom'; }).length;
+      var edTot   = edL.length; // 34 per edition
+      var edPct   = edTot ? Math.round(edLive / edTot * 100) : 0;
+      var edRev   = Math.round(edLiveDl * netDl + edLiveCust * netCust);
+      var barClr  = edPct >= 100 ? 'var(--green2)' : edPct >= 50 ? 'var(--teal)' : 'var(--gold)';
+      return '<div class="ed-breakdown-item">'
+        + '<div style="font-size:18px;">' + ed.flag + '</div>'
+        + '<div style="flex:1;">'
+          + '<div style="display:flex;justify-content:space-between;margin-bottom:3px;">'
+            + '<span style="font-size:11px;color:var(--paper2);">' + ed.name + ' <span style="font-family:DM Mono,monospace;font-size:8px;color:' + (ed.cat==='black'?'var(--teal)':'var(--gold2)') + ';">' + (ed.cat==='black'?'BLK':'GEN') + '</span></span>'
+            + '<span style="font-family:DM Mono,monospace;font-size:9px;color:var(--mid);">' + edLive + '/' + edTot + '</span>'
+          + '</div>'
+          + '<div class="ed-bar-bg"><div class="ed-bar-fill" style="width:' + edPct + '%;background:' + barClr + ';"></div></div>'
+        + '</div>'
+        + '<div style="text-align:right;min-width:70px;">'
+          + '<div style="font-family:Playfair Display,serif;font-size:14px;font-weight:700;color:var(--gold);">$' + edRev + '</div>'
+          + '<div style="font-family:DM Mono,monospace;font-size:9px;color:var(--mid);">' + edPct + '%</div>'
+        + '</div>'
+        + '</div>';
+    }).join('');
+  }
+}
+
+// ════════════════════════════════════════════
+// RENDER — ALL
+// ════════════════════════════════════════════
+function renderAll(){
+  renderHeaderStats();
+  renderMission();
+  renderTasks();
+}
+
+// ════════════════════════════════════════════
+// VIEW SWITCHING
+// ════════════════════════════════════════════
+function showView(name, btnEl){
+  ['today','pipeline','projections'].forEach(function(v){
+    var el = document.getElementById('v-' + v);
+    if(el) el.classList.toggle('on', v === name);
+  });
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('on'); });
+  if(btnEl) btnEl.classList.add('on');
+  misc.curView = name;
+  try { localStorage.setItem(MISC_KEY, JSON.stringify(misc)); } catch(e){}
+  if(name === 'pipeline')    renderPipeline();
+  if(name === 'projections') renderProjections();
+}
+
+// ════════════════════════════════════════════
+// TOAST
+// ════════════════════════════════════════════
+var toastTimer = null;
+function toast(msg){
+  var el = document.getElementById('toast');
+  if(!el) return;
+  el.textContent = msg;
+  el.classList.add('on');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ el.classList.remove('on'); }, 2800);
+}
+
+// ════════════════════════════════════════════
+// DATA-ATTRIBUTE CLICK HANDLERS (avoids quote-in-attribute issues)
+// ════════════════════════════════════════════
+function handleDot(el){
+  var lid = el.getAttribute('data-lid');
+  var sid = el.getAttribute('data-sid');
+  var val = el.getAttribute('data-val') === 'true';
+  markStage(lid, sid, val);
+}
+function handleMarkLive(el){
+  var lid = el.getAttribute('data-lid');
+  markAllStages(lid);
+}
+function handlePipeDot(el){
+  var lid = el.getAttribute('data-lid');
+  var sid = el.getAttribute('data-sid');
+  var val = el.getAttribute('data-val') === 'true';
+  markStage(lid, sid, val);
+}
+
+// ── GO ──
+init();
+</script>
 </body>
 </html>
